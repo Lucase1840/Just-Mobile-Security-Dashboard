@@ -8,7 +8,6 @@ export default function Home() {
         Get started by editing&nbsp;
         <code>src/app/page.tsx</code>
       </p>
-      <h1 className='text-3xl font-bold underline p-8'>Hello world!</h1>
     </main>
   )
 }
