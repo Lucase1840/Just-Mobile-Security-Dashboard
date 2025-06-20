@@ -1,0 +1,7 @@
+*.config.*
+src/components/ui
+build
+coverage
+dist
+dist
+node_modules
