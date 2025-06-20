@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const userDataSchema = z.object({
-  userName: z.string().email(),
+  userName: z.string(),
   password: z.string(),
 })
 
