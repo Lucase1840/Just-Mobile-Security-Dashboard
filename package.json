@@ -12,6 +12,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
     "@tailwindcss/postcss": "^4.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -27,6 +28,7 @@
     "@commitlint/cli": "19.5.0",
     "@commitlint/config-conventional": "19.5.0",
     "@stylistic/eslint-plugin": "2.10.0",
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "22.7.9",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
