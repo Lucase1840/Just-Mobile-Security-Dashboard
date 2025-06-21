@@ -9,36 +9,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { type Service, type ServicesData } from '@/types/services-data-types'
+import { type ServicesData } from '@/types/services-data-types'
 
-import mockedData from '../../../api/(services)/data/mock-data.json'
+import { getHighestSeverity, getTotalVulnerabilities } from './utils'
 
-function ServicesTable() {
-  const filteredServices = mockedData as ServicesData
-
-  const getTotalVulnerabilities = (service: Service) => {
-    if (!service.severityCount) return 0
-
-    return Object.values(service.severityCount).reduce<number>(
-      (sum: number, count: number) => sum + count,
-      0,
-    )
-  }
-
-  const getHighestSeverity = (service: Service) => {
-    if (!service.severityCount) return { level: 'none', count: 0 }
-    if (service.severityCount.high && service.severityCount.high > 0)
-      return { level: 'high', count: service.severityCount.high }
-    if (service.severityCount.medium && service.severityCount.medium > 0)
-      return { level: 'medium', count: service.severityCount.medium }
-    if (service.severityCount.low && service.severityCount.low > 0)
-      return { level: 'low', count: service.severityCount.low }
-    if (service.severityCount.info && service.severityCount.info > 0)
-      return { level: 'info', count: service.severityCount.info }
-
-    return { level: 'none', count: 0 }
-  }
-
+function ServicesTable({ servicesData }: { servicesData: ServicesData }) {
   return (
     <div className='rounded-md border'>
       <Table>
@@ -54,7 +29,7 @@ function ServicesTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredServices.services.map((service) => {
+          {servicesData.map((service) => {
             const totalVulns = getTotalVulnerabilities(service)
             const highestSeverity = getHighestSeverity(service)
 

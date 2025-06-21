@@ -1,19 +1,17 @@
-// import { type ServicesData } from '@/types/services-data-types'
+import { URLS } from '@/lib/constants/urls'
+import { fetchData } from '@/lib/utils-functions/utils'
+import { ServicesDataSchema } from '@/lib/validation-schemas/services-validation-schemas'
 
-import ServicesTable from './components/services-table'
+import ServicesTable from './components/service-table/services-table'
 
-function DashboardPage() {
-  // const services = await fetch('http://localhost:3000/api/services', {
-  //   method: 'GET',
-  //   credentials: 'include',
-  //   next: {
-  //     revalidate: 60,
-  //   },
-  // })
-
-  // const servicesData = (await services.json()) as ServicesData
-
-  // console.log(servicesData)
+async function DashboardPage() {
+  const servicesData = await fetchData(URLS.getServices(), ServicesDataSchema, {
+    method: 'GET',
+    credentials: 'include',
+    next: {
+      revalidate: 60,
+    },
+  })
 
   return (
     <div className='p-4'>
@@ -24,7 +22,7 @@ function DashboardPage() {
             Monitorea los servicios de evaluación de seguridad
           </p>
         </div>
-        <ServicesTable />
+        <ServicesTable servicesData={servicesData} />
       </div>
     </div>
   )
