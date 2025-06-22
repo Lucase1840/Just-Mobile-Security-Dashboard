@@ -1,5 +1,5 @@
 import { URLS } from '@/lib/constants/urls'
-import { fetchData } from '@/lib/utils-functions/utils'
+import { fetchData } from '@/lib/utils'
 import { ServicesDataSchema } from '@/lib/validation-schemas/services-validation-schemas'
 
 import ServicesTable from './components/service-table/services-table'
