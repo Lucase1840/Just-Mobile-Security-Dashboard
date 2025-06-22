@@ -1,6 +1,6 @@
 import { type RequestInit } from 'next/dist/server/web/spec-extension/request'
 
-import { clsx, type ClassValue } from 'clsx'
+import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { type z } from 'zod'
 
