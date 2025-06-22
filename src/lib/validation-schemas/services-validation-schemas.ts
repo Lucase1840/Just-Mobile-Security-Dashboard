@@ -90,6 +90,13 @@ export const SeveritySchema = z.object({
   info: z.number().optional(),
 })
 
+export const SeverityDistributionSchema = z.object({
+  high: z.number().optional(),
+  medium: z.number().optional(),
+  low: z.number().optional(),
+  info: z.number().optional(),
+})
+
 export const ServiceSchema = z.object({
   id: z.number(),
   status: z.union([
@@ -111,6 +118,7 @@ export const ServiceSchema = z.object({
   summary: SummarySchema.optional(),
   vulnerabilities: z.array(VulnerabilitySchema).optional(),
   severityCount: SeveritySchema.optional(),
+  severityDistribution: SeverityDistributionSchema.optional(),
 })
 
 export const ServicesSchema = z.object({
@@ -118,3 +126,8 @@ export const ServicesSchema = z.object({
 })
 
 export const ServicesDataSchema = z.array(ServiceSchema)
+
+export const serviceDetailFiltersSchema = z.object({
+  name: z.string().optional(),
+  severity: z.string().optional(),
+})
