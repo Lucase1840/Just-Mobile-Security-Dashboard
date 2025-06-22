@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as unknown
     const userData = validateUserData(body)
 
-    if (userData.userName === 'admin@admin.com' && userData.password === 'admin') {
+    if (userData.userName === 'admin' && userData.password === 'admin') {
       const cookieStore = cookies()
 
       cookieStore.set('user-rol', 'admin', {
