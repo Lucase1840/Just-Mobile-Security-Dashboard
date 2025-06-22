@@ -2,22 +2,28 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 import { z } from 'zod'
 
-import { type ServicesData, SeverityEnum } from '@/types/services-data-types'
+import { ServicesSchema } from '@/lib/validation-schemas/services-validation-schemas'
 
 import services from '../../data/mock-data.json'
 
 const filtersSchema = z.object({
   severity: z
-    .enum([SeverityEnum.Info, SeverityEnum.Low, SeverityEnum.Medium, SeverityEnum.High])
+    .union([z.literal('high'), z.literal('medium'), z.literal('low'), z.literal('info')])
     .optional(),
   name: z.string().optional(),
 })
 
-export function GET(request: NextRequest, { params }: { params: { serviceId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { serviceId: string } }) {
   try {
     const serviceId = params.serviceId
-    const servicesData = services as ServicesData
-    const service = servicesData.services.find((service) => service.id === Number(serviceId))
+
+    const getServicesData = new Promise<unknown>((resolve) =>
+      setTimeout(() => resolve(services), 300),
+    )
+
+    const servicesData = await getServicesData
+    const servicesDataParsed = ServicesSchema.parse(servicesData)
+    const service = servicesDataParsed.services.find((service) => service.id === Number(serviceId))
 
     if (!service) {
       return NextResponse.json({ error: 'Service not found' }, { status: 404 })
