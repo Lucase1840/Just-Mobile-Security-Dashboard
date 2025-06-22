@@ -9,7 +9,7 @@ import services from '../data/mock-data.json'
 export async function GET() {
   try {
     const getServicesData = new Promise<unknown>((resolve) =>
-      setTimeout(() => resolve(services), 3000),
+      setTimeout(() => resolve(services), 300),
     )
 
     const data = await getServicesData
