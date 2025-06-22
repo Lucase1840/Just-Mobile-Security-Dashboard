@@ -5,7 +5,7 @@ interface LoginLayoutProps {
 }
 
 function AuthLayout({ children }: LoginLayoutProps) {
-  return <div className='flex h-dvh w-dvw'>{children}</div>
+  return <main className='flex h-dvh w-dvw'>{children}</main>
 }
 
 export default AuthLayout

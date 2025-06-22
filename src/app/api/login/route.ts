@@ -3,12 +3,12 @@ import { NextResponse } from 'next/server'
 
 import { z } from 'zod'
 
-import { validateUserData } from './utils'
+import { userDataSchema } from '@/lib/validation-schemas/auth-validation-schemas'
 
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as unknown
-    const userData = validateUserData(body)
+    const userData = userDataSchema.parse(body)
 
     if (userData.userName === 'admin' && userData.password === 'admin') {
       const cookieStore = cookies()
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Invalid credentials' }, { status: 401 })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validation failed' }, { status: 400 })
+      return NextResponse.json({ error: 'Received invalid data from upstream' }, { status: 422 })
     }
 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
