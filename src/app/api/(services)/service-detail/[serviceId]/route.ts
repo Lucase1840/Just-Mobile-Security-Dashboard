@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 import { z } from 'zod'
 
+import { SERVER_ENV_VARIABLES } from '@/lib/constants/env'
 import { ServicesSchema } from '@/lib/validation-schemas/services-validation-schemas'
 
 import services from '../../data/mock-data.json'
@@ -18,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: { serviceI
     const serviceId = params.serviceId
 
     const getServicesData = new Promise<unknown>((resolve) =>
-      setTimeout(() => resolve(services), 300),
+      setTimeout(() => resolve(services), Number(SERVER_ENV_VARIABLES.MOCK_API_DELAY) || 500),
     )
 
     const servicesData = await getServicesData

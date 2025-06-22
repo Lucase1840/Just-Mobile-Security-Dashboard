@@ -3,11 +3,17 @@ import { NextResponse } from 'next/server'
 
 import { z } from 'zod'
 
+import { SERVER_ENV_VARIABLES } from '@/lib/constants/env'
 import { userDataSchema } from '@/lib/validation-schemas/auth-validation-schemas'
 
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as unknown
+
+    void (await new Promise((resolve) =>
+      setTimeout(resolve, Number(SERVER_ENV_VARIABLES.MOCK_API_DELAY) || 500),
+    ))
+
     const userData = userDataSchema.parse(body)
 
     if (userData.userName === 'admin' && userData.password === 'admin') {

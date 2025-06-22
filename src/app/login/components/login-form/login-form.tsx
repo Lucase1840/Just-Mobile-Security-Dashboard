@@ -1,19 +1,23 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import PasswordInput from '@/components/ui/password-input'
+import { loginService } from '@/services/services'
 
-function LoginForm() {
+export function LoginForm() {
   const [userName, setUserName] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // TODO: refactor this logic and take outside component - LE-20-06-2025
     e.preventDefault()
 
     if (!userName || !password) {
@@ -22,23 +26,21 @@ function LoginForm() {
       return
     }
 
-    const response = await fetch('http://localhost:3000/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ userName, password }),
-    })
+    try {
+      const response = await loginService({ userName, password })
 
-    const data = (await response.json()) as unknown
+      if (response.ok) {
+        router.push('/dashboard')
+      }
 
-    if (response.status === 200) {
-      setError('')
+      if (response.status === 401) {
+        toast.error('Usuario o contraseña incorrectos')
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message)
+      }
     }
-
-    if (response.status === 401) {
-      setError('Email o contraseña incorrectos')
-    }
-
-    // eslint-disable-next-line no-console
-    console.log('submit', data)
   }
 
   return (
