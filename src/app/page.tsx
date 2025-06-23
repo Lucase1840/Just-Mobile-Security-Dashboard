@@ -4,10 +4,6 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <h1>just-mobile-security</h1>
-      <p>
-        Get started by editing&nbsp;
-        <code>src/app/page.tsx</code>
-      </p>
     </main>
   )
 }

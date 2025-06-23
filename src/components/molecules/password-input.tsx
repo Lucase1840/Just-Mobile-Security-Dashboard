@@ -1,9 +1,9 @@
 import { forwardRef, useState } from 'react'
 
+import { EyeClosed, EyeIcon } from 'lucide-react'
+
 import { Input } from '@/components/ui/input'
 
-import { OpenEyeIcon } from '@icons/index'
-import { ClosedEyeIcon } from '@icons/index'
 
 type PasswordInputProps = Readonly<
   React.ComponentPropsWithRef<'input'> & {
@@ -20,12 +20,12 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
       <div className='relative'>
         <Input {...props} ref={ref} type={showPassword ? 'text' : 'password'} />
         {showPassword ? (
-          <OpenEyeIcon
+          <EyeIcon
             className='absolute right-0 top-[50%] translate-y-[-50%] mr-2'
             onClick={handleShowPassword}
           />
         ) : (
-          <ClosedEyeIcon
+          <EyeClosed
             className='absolute right-0 top-[50%] translate-y-[-50%] mr-2'
             onClick={handleShowPassword}
           />
