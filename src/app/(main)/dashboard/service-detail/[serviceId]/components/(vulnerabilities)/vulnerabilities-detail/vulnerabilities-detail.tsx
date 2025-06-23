@@ -20,7 +20,7 @@ import { SEVERITY_LEVELS_LABELS } from '@/lib/constants/services'
 import { getSeverityVariant } from '@/lib/utils'
 import { type Vulnerability } from '@/types/services-data-types'
 
-import EvidenceDialog from './evidence-dialog'
+import EvidenceDialog from '../evidence-dialog/evidence-dialog'
 
 interface VulnerabilityDetailProps {
   evidenceDefaultValue: string
@@ -44,7 +44,7 @@ function VulnerabilityDetail({
     void copy(shareableUrl)
   }
 
-  const translation = vulnerability.translations[0]
+  const translation = vulnerability.translations[1] ?? vulnerability.translations[0]
 
   return (
     <div className='space-y-6'>

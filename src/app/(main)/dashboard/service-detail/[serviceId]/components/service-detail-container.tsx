@@ -9,16 +9,19 @@ import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { type Service, type Vulnerability } from '@/types/services-data-types'
 
-import VulnerabilityDetail from './vulnerabilities-detail'
-import { ServiceDetailSkeleton } from './vulnerability-detail-skeleton'
-import { VulnerabilityListSkeleton } from './vulnerability-list-skeleton'
+import VulnerabilityDetail from './(vulnerabilities)/vulnerabilities-detail/vulnerabilities-detail'
+import { ServiceDetailSkeleton } from './(vulnerabilities)/vulnerabilities-detail/vulnerability-detail-skeleton'
+import { VulnerabilityListSkeleton } from './(vulnerabilities)/vulnerability-list/vulnerability-list-skeleton'
 
-const VulnerabilityList = dynamic(() => import('./vulnerability-list'), {
-  loading: () => <VulnerabilityListSkeleton />,
-  ssr: false,
-})
+const VulnerabilityList = dynamic(
+  () => import('./(vulnerabilities)/vulnerability-list/vulnerability-list'),
+  {
+    loading: () => <VulnerabilityListSkeleton />,
+    ssr: false,
+  },
+)
 
-const ServiceDetail = dynamic(() => import('./service-detail'), {
+const ServiceDetail = dynamic(() => import('./(service-detail)/service-detail'), {
   loading: () => <ServiceDetailSkeleton />,
   ssr: false,
 })
