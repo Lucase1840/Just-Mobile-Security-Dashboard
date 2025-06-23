@@ -4,6 +4,8 @@ import { ServicesDataSchema } from '@/lib/validation-schemas/services-validation
 
 import ServicesTable from './components/service-table/services-table'
 
+export const dynamic = 'force-dynamic'
+
 async function DashboardPage() {
   const servicesData = await fetchData(URLS.getServices(), ServicesDataSchema, {
     method: 'GET',

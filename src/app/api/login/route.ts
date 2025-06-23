@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 import { z } from 'zod'
 
-import { SERVER_ENV_VARIABLES } from '@/lib/constants/env'
+import { ENV_VARIABLES } from '@/lib/constants/env'
 import { userDataSchema } from '@/lib/validation-schemas/auth-validation-schemas'
 
 export async function POST(request: Request) {
@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as unknown
 
     void (await new Promise((resolve) =>
-      setTimeout(resolve, Number(SERVER_ENV_VARIABLES.MOCK_API_DELAY) || 500),
+      setTimeout(resolve, Number(ENV_VARIABLES.MOCK_API_DELAY) || 500),
     ))
 
     const userData = userDataSchema.parse(body)

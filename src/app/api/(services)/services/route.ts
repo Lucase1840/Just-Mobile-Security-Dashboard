@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { ZodError } from 'zod'
 
-import { SERVER_ENV_VARIABLES } from '@/lib/constants/env'
+import { ENV_VARIABLES } from '@/lib/constants/env'
 import { ServicesSchema } from '@/lib/validation-schemas/services-validation-schemas'
 
 import services from '../data/mock-data.json'
@@ -10,7 +10,7 @@ import services from '../data/mock-data.json'
 export async function GET() {
   try {
     const getServicesData = new Promise<unknown>((resolve) =>
-      setTimeout(() => resolve(services), Number(SERVER_ENV_VARIABLES.MOCK_API_DELAY) || 500),
+      setTimeout(() => resolve(services), Number(ENV_VARIABLES.MOCK_API_DELAY) || 500),
     )
 
     const data = await getServicesData

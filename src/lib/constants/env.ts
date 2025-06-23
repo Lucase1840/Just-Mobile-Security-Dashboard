@@ -1,12 +1,10 @@
-'server only'
-
 import { z } from 'zod'
 
-const ENV_VARIABLES = z.object({
+const EnvSchema = z.object({
   BASE_API_ROUTE: z.string(),
   MOCK_API_DELAY: z.string().optional(),
 })
 
-const SERVER_ENV_VARIABLES = ENV_VARIABLES.parse(process.env)
+const ENV_VARIABLES = EnvSchema.parse(process.env)
 
-export { SERVER_ENV_VARIABLES }
+export { ENV_VARIABLES }

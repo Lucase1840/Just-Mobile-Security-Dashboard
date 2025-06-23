@@ -9,6 +9,8 @@ import {
 
 import ServiceDetailContainer from './components/service-detail-container'
 
+export const dynamic = 'force-dynamic'
+
 async function ServiceDetailPage({
   params,
   searchParams,

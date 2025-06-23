@@ -1,7 +1,8 @@
+import { ENV_VARIABLES } from '@/lib/constants/env'
 import { type UserData } from '@/types/auth-types'
 
 export const loginService = async (values: UserData) =>
-  fetch('http://localhost:3000/api/login', {
+  fetch(`${ENV_VARIABLES.BASE_API_ROUTE}/api/login`, {
     method: 'POST',
     body: JSON.stringify(values),
   })
