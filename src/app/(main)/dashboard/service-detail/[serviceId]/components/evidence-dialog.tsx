@@ -1,6 +1,5 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 
 import { Expand, ExternalLink } from 'lucide-react'
@@ -32,27 +31,12 @@ function EvidenceDialog({
   serviceId,
   openDefaultValue,
 }: CodeModalProps) {
-  const searchParams = useSearchParams()
   const [isOpen, setIsOpen] = useState(Boolean(openDefaultValue))
-  const pathName = usePathname()
-  const router = useRouter()
   const { copy } = useClipboard()
 
   const shareableUrl = `${window.location.origin}${window.location.pathname}?service=${serviceId}&vulnerability=${vulnerabilityId}&evidence=${evidence.id}`
 
   const onOpen = (value: boolean) => {
-    if (value) {
-      const params = new URLSearchParams(searchParams.toString())
-
-      params.set('evidence', evidence.id)
-      router.replace(`${pathName}?${params.toString()}`, { scroll: false })
-    } else {
-      const params = new URLSearchParams(searchParams.toString())
-
-      params.delete('evidence')
-      router.replace(`${pathName}?${params.toString()}`, { scroll: false })
-    }
-
     setIsOpen(value)
   }
 

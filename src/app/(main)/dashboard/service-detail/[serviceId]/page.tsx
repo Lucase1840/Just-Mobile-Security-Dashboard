@@ -16,18 +16,36 @@ async function ServiceDetailPage({
   searchParams,
 }: {
   params: { serviceId: string }
-  searchParams: { name?: string; severity?: string; vulnerability?: string }
+  searchParams: { name?: string; severity?: string; vulnerability?: string; evidence?: string }
 }) {
   if (!params.serviceId) {
     redirect('/dashboard')
   }
 
+  // Extract vulnerability and evidence for initial render
+  const initialVulnerabilityId = searchParams.vulnerability
+  const initialEvidenceId = searchParams.evidence
+
   let filters = ''
 
-  const parsedFilters = serviceDetailFiltersSchema.safeParse(searchParams)
+  // Only include name and severity in the API filters
+  const apiFilters = {
+    name: searchParams.name,
+    severity: searchParams.severity,
+  }
+
+  const parsedFilters = serviceDetailFiltersSchema.safeParse(apiFilters)
+
+  // Filter out undefined values and create URLSearchParams
+  const urlParams: Record<string, string> = {}
 
   if (parsedFilters.success) {
-    filters = new URLSearchParams(parsedFilters.data).toString()
+    if (parsedFilters.data.name !== undefined) urlParams.name = parsedFilters.data.name
+    if (parsedFilters.data.severity !== undefined) urlParams.severity = parsedFilters.data.severity
+  }
+
+  if (Object.keys(urlParams).length > 0) {
+    filters = new URLSearchParams(urlParams).toString()
   }
 
   const servicesData = await fetchData(
@@ -40,7 +58,11 @@ async function ServiceDetailPage({
   )
 
   return servicesData.data ? (
-    <ServiceDetailContainer service={servicesData.data} />
+    <ServiceDetailContainer
+      initialEvidenceId={initialEvidenceId}
+      initialVulnerabilityId={initialVulnerabilityId}
+      service={servicesData.data}
+    />
   ) : (
     <div>No se encontró el servicio</div>
   )
