@@ -2,7 +2,13 @@
 
 import { usePathname } from 'next/navigation'
 
-import { Code, ExternalLink, LinkIcon, Share2 } from 'lucide-react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@radix-ui/react-accordion'
+import { ChevronDown, Code, ExternalLink, LinkIcon, Share2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -43,29 +49,36 @@ function VulnerabilityDetail({
   return (
     <div className='space-y-6'>
       <Card>
-        <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
-            <LinkIcon className='h-5 w-5' />
-            Referencias
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className='space-y-2'>
-            {vulnerability.refs.map((ref) => (
-              <div
-                className='flex items-center justify-between p-3 border rounded-lg'
-                key={ref.url}
-              >
-                <span className='text-sm font-medium'>{ref.label}</span>
-                <Button asChild size='sm' variant='ghost'>
-                  <a href={ref.url} rel='noopener noreferrer' target='_blank'>
-                    <ExternalLink className='h-4 w-4' />
-                  </a>
-                </Button>
+        <Accordion collapsible type='single'>
+          <AccordionItem value='item-1'>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2'>
+                <AccordionTrigger className='flex gap-2 items-center w-full'>
+                  <LinkIcon className='h-5 w-5' />
+                  Referencias
+                  <ChevronDown className='h-4 w-4 ml-auto' />
+                </AccordionTrigger>
+              </CardTitle>
+            </CardHeader>
+            <AccordionContent className='p-4'>
+              <div className='space-y-2'>
+                {vulnerability.refs.map((ref) => (
+                  <div
+                    className='flex items-center justify-between p-3 border rounded-lg'
+                    key={ref.url}
+                  >
+                    <span className='text-sm font-medium'>{ref.label}</span>
+                    <Button asChild size='sm' variant='ghost'>
+                      <a href={ref.url} rel='noopener noreferrer' target='_blank'>
+                        <ExternalLink className='h-4 w-4' />
+                      </a>
+                    </Button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </CardContent>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </Card>
       <Card>
         <CardHeader>
@@ -92,8 +105,8 @@ function VulnerabilityDetail({
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs className='w-full' defaultValue={evidenceDefaultValue ? 'evidence' : 'description'}>
-            <TabsList className='grid w-full grid-cols-4'>
+          <Tabs defaultValue={evidenceDefaultValue ? 'evidence' : 'description'}>
+            <TabsList className='grid grid-cols-4'>
               <TabsTrigger value='description'>Descripción</TabsTrigger>
               <TabsTrigger value='impact'>Impacto</TabsTrigger>
               <TabsTrigger value='remediation'>Remediación</TabsTrigger>
@@ -102,68 +115,82 @@ function VulnerabilityDetail({
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent className='space-y-4' value='description'>
+            <TabsContent
+              className='space-y-4 w-full h-[calc(100dvh-500px)] overflow-auto'
+              value='description'
+            >
               <div
                 className='prose prose-sm max-w-none'
                 dangerouslySetInnerHTML={{ __html: translation.description || '' }}
               />
             </TabsContent>
 
-            <TabsContent className='space-y-4' value='impact'>
+            <TabsContent
+              className='space-y-4 w-full h-[calc(100dvh-500px)] overflow-auto'
+              value='impact'
+            >
               <div
                 className='prose prose-sm max-w-none'
                 dangerouslySetInnerHTML={{ __html: translation.impact || '' }}
               />
             </TabsContent>
 
-            <TabsContent className='space-y-4' value='remediation'>
+            <TabsContent
+              className='space-y-4 w-full h-[calc(100dvh-500px)] overflow-auto'
+              value='remediation'
+            >
               <div
                 className='prose prose-sm max-w-none'
                 dangerouslySetInnerHTML={{ __html: translation.remediation || '' }}
               />
             </TabsContent>
 
-            <TabsContent className='space-y-4' value='evidence'>
-              <div className='space-y-4'>
-                {vulnerability.evidences.map((evidence, index) => (
-                  <Card key={evidence.id}>
-                    <CardHeader className='pb-3'>
-                      <div className='flex items-center justify-between'>
-                        <CardTitle className='text-base flex items-center gap-2'>
-                          <Code className='h-4 w-4' />
-                          Evidencia {index + 1}
-                        </CardTitle>
-                        <div className='flex items-center gap-2'>
-                          <Badge variant='outline'>{evidence.extra}</Badge>
-                          {Boolean(serviceId) && (
-                            <EvidenceDialog
-                              evidence={evidence}
-                              openDefaultValue={evidence.id === evidenceDefaultValue}
-                              serviceId={serviceId}
-                              vulnerabilityId={vulnerability.vulnerabilityId}
-                            />
-                          )}
-                        </div>
+            <TabsContent
+              className='space-y-4 w-full h-[calc(100dvh-495px)] overflow-auto'
+              value='evidence'
+            >
+              {vulnerability.evidences.map((evidence, index) => (
+                <Card className='w-full' key={evidence.id}>
+                  <CardHeader className='pb-3'>
+                    <div className='flex items-center justify-between'>
+                      <CardTitle className='text-base flex items-center gap-2'>
+                        <Code className='h-4 w-4' />
+                        Evidencia {index + 1}
+                      </CardTitle>
+                      <div className='flex items-center gap-2'>
+                        <Badge variant='outline'>{evidence.extra}</Badge>
+                        {Boolean(serviceId) && (
+                          <EvidenceDialog
+                            evidence={evidence}
+                            openDefaultValue={evidence.id === evidenceDefaultValue}
+                            serviceId={serviceId}
+                            vulnerabilityId={vulnerability.vulnerabilityId}
+                          />
+                        )}
                       </div>
-                      <CardDescription className='truncate flex flex-col gap-2'>
-                        <div>
-                          <span title={evidence.file_path}>{evidence.file_path}</span>
-                        </div>
+                    </div>
+                    <CardDescription className='flex flex-col gap-2 max-w-auto'>
+                      <div>
+                        <p className='truncate' title={evidence.file_path}>
+                          {evidence.file_path}
+                        </p>
+                      </div>
+                      <div>
                         {evidence.file_line.length > 0 &&
                           ` (Line ${evidence.file_line.join(', ')})`}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <ScrollArea className='h-64 w-full rounded-md border'>
-                        <pre className='p-4 text-sm'>
-                          <code>{evidence.value}</code>
-                        </pre>
-                        <ScrollBar orientation='horizontal' />
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </div>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ScrollArea className='h-64 w-full rounded-md border'>
+                      <pre className='p-4 text-sm'>
+                        <code>{evidence.value}</code>
+                      </pre>
+                      <ScrollBar orientation='horizontal' />
+                    </ScrollArea>
+                  </CardContent>
+                </Card>
+              ))}
             </TabsContent>
           </Tabs>
         </CardContent>

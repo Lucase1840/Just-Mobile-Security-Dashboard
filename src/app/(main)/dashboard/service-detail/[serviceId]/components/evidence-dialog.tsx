@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useClipboard } from '@/hooks/use-clipboard'
 
 import type { Evidence } from '@/types/services-data-types'
@@ -90,6 +90,7 @@ function EvidenceDialog({
           <pre className='p-4 text-sm'>
             <code className='language-java'>{evidence.value}</code>
           </pre>
+          <ScrollBar orientation='horizontal' />
         </ScrollArea>
       </DialogContent>
     </Dialog>
