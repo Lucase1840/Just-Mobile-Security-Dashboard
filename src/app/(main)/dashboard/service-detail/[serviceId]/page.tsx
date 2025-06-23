@@ -22,26 +22,25 @@ async function ServiceDetailPage({
     redirect('/dashboard')
   }
 
-  // Extract vulnerability and evidence for initial render
   const initialVulnerabilityId = searchParams.vulnerability
   const initialEvidenceId = searchParams.evidence
 
   let filters = ''
 
-  // Only include name and severity in the API filters
-  const apiFilters = {
-    name: searchParams.name,
-    severity: searchParams.severity,
-  }
+  // *Only include name and severity in the API filters
+  // const apiFilters = {
+  //   name: searchParams.name,
+  //   severity: searchParams.severity,
+  // }
 
-  const parsedFilters = serviceDetailFiltersSchema.safeParse(apiFilters)
+  const parsedApiFilters = serviceDetailFiltersSchema.safeParse(searchParams)
 
-  // Filter out undefined values and create URLSearchParams
   const urlParams: Record<string, string> = {}
 
-  if (parsedFilters.success) {
-    if (parsedFilters.data.name !== undefined) urlParams.name = parsedFilters.data.name
-    if (parsedFilters.data.severity !== undefined) urlParams.severity = parsedFilters.data.severity
+  if (parsedApiFilters.success) {
+    if (parsedApiFilters.data.name !== undefined) urlParams.name = parsedApiFilters.data.name
+    if (parsedApiFilters.data.severity !== undefined)
+      urlParams.severity = parsedApiFilters.data.severity
   }
 
   if (Object.keys(urlParams).length > 0) {
