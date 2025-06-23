@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const body = (await request.json()) as unknown
 
     void (await new Promise((resolve) =>
-      setTimeout(resolve, Number(ENV_VARIABLES.MOCK_API_DELAY) || 500),
+      setTimeout(resolve, Number(ENV_VARIABLES.NEXT_PUBLIC_MOCK_API_DELAY) || 500),
     ))
 
     const userData = userDataSchema.parse(body)

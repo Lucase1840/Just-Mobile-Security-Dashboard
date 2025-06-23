@@ -15,7 +15,11 @@ import ViewDetailButton from '../ui/view-detail-button'
 
 import { getHighestSeverity, getTotalVulnerabilities } from './utils'
 
-function ServicesTable({ servicesData }: { servicesData: ServicesData }) {
+function ServicesTable({ servicesData }: { servicesData: ServicesData | null }) {
+  if (!servicesData) {
+    return <div>No se encontraron servicios</div>
+  }
+
   return (
     <div className='rounded-md border'>
       <Table>

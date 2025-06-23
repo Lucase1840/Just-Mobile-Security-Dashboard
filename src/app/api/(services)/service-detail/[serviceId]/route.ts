@@ -19,7 +19,7 @@ export async function GET(request: NextRequest, { params }: { params: { serviceI
     const serviceId = params.serviceId
 
     const getServicesData = new Promise<unknown>((resolve) =>
-      setTimeout(() => resolve(services), Number(ENV_VARIABLES.MOCK_API_DELAY) || 500),
+      setTimeout(() => resolve(services), Number(ENV_VARIABLES.NEXT_PUBLIC_MOCK_API_DELAY) || 500),
     )
 
     const servicesData = await getServicesData

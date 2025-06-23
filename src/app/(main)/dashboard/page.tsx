@@ -24,7 +24,7 @@ async function DashboardPage() {
             Monitorea los servicios de evaluación de seguridad
           </p>
         </div>
-        <ServicesTable servicesData={servicesData} />
+        <ServicesTable servicesData={servicesData.data ?? null} />
       </div>
     </div>
   )

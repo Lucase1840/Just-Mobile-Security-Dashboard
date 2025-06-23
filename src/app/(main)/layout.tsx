@@ -1,17 +1,7 @@
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-
 import { AppSidebar } from '@/components/organisms/app-sidebar'
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 
 function MainLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = cookies()
-  const userRol = cookieStore.get('user-rol')
-
-  if (!userRol) {
-    redirect('/login')
-  }
-
   return (
     <SidebarProvider>
       <AppSidebar />

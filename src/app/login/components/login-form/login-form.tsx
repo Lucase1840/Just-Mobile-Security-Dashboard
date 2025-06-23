@@ -9,7 +9,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import PasswordInput from '@/components/ui/password-input'
-import { loginService } from '@/services/services'
+import { URLS } from '@/lib/constants/urls'
+import { fetchData } from '@/lib/utils'
+import { userLoginResponseSchema } from '@/lib/validation-schemas/auth-validation-schemas'
 
 export function LoginForm() {
   const [userName, setUserName] = useState<string>('')
@@ -26,20 +28,17 @@ export function LoginForm() {
       return
     }
 
-    try {
-      const response = await loginService({ userName, password })
+    const response = await fetchData(URLS.login(), userLoginResponseSchema, {
+      method: 'POST',
+      body: JSON.stringify({ userName, password }),
+    })
 
-      if (response.ok) {
-        router.push('/dashboard')
-      }
-
-      if (response.status === 401) {
-        toast.error('Usuario o contraseña incorrectos')
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message)
-      }
+    if (response.data && response.status === 200) {
+      router.push('/dashboard')
+    } else {
+      setPassword('')
+      setUserName('')
+      toast.error(response.data ? response.data.message : response.message)
     }
   }
 
@@ -56,6 +55,7 @@ export function LoginForm() {
         onChange={(e) => setUserName(e.target.value)}
         placeholder='Ingrese su email'
         type='text'
+        value={userName}
       />
       <Label htmlFor='password'>Contraseña</Label>
       <PasswordInput
@@ -64,6 +64,7 @@ export function LoginForm() {
         onChange={(e) => setPassword(e.target.value)}
         placeholder='Ingrese su contraseña'
         showPasswordIcon
+        value={password}
       />
       <Button type='submit'>Ingresar</Button>
 

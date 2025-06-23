@@ -39,7 +39,11 @@ async function ServiceDetailPage({
     },
   )
 
-  return <ServiceDetailContainer service={servicesData} />
+  return servicesData.data ? (
+    <ServiceDetailContainer service={servicesData.data} />
+  ) : (
+    <div>No se encontró el servicio</div>
+  )
 }
 
 export default ServiceDetailPage

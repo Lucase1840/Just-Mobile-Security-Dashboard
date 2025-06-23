@@ -16,7 +16,7 @@ export async function fetchData<T>(
   url: string,
   schema: z.ZodSchema<T>,
   options?: RequestInit,
-): Promise<T> {
+): Promise<{ data: T; status: number } | { data: null; message: string }> {
   try {
     const res = await fetch(url, {
       ...options,
@@ -27,7 +27,9 @@ export async function fetchData<T>(
     })
 
     if (!res.ok) {
-      if (res.status === 403) {
+      if (res.status === 401) {
+        throw new Error('Usuario o contraseña incorrectos')
+      } else if (res.status === 403) {
         throw new Error('Prohibido')
       } else if (res.status === 422) {
         throw new Error('Entidad no procesable')
@@ -46,13 +48,13 @@ export async function fetchData<T>(
       throw new Error('Formato de respuesta inválido')
     }
 
-    return parsed.data
+    return { data: parsed.data, status: res.status }
   } catch (err) {
     if (err instanceof Error) {
-      throw new Error(err.message)
+      return { data: null, message: err.message }
     }
 
-    throw new Error('Error al obtener los datos')
+    return { data: null, message: 'Error desconocido' }
   }
 }
 
