@@ -64,7 +64,10 @@ async function ServiceDetailPage({
       service={servicesData.data}
     />
   ) : (
-    <div>No se encontró el servicio</div>
+    <div className='flex flex-col items-center justify-center h-screen'>
+      <div className='text-red-500 text-center'>No se encontró el servicio</div>
+      <p className='text-red-500 text-center'>{servicesData.message}</p>
+    </div>
   )
 }
 

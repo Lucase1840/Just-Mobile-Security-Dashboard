@@ -29,12 +29,12 @@ export async function fetchData<T>(
     if (!res.ok) {
       if (res.status === 401) {
         throw new Error('Usuario o contraseña incorrectos')
+      } else if (res.status === 404) {
+        throw new Error('Recurso no encontrado')
       } else if (res.status === 403) {
         throw new Error('Prohibido')
       } else if (res.status === 422) {
         throw new Error('Entidad no procesable')
-      } else if (res.status === 500) {
-        throw new Error('Error del servidor')
       }
 
       throw new Error(`Request failed with status ${res.status.toString()}`)

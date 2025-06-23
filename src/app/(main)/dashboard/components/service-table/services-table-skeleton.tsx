@@ -8,7 +8,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-function DashboardSkeleton() {
+function ServicesTableSkeleton() {
   return (
     <div className='rounded-md border'>
       <Table>
@@ -24,7 +24,7 @@ function DashboardSkeleton() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: 5 }).map((_, index) => (
+          {Array.from({ length: 10 }).map((_, index) => (
             <TableRow key={index}>
               <TableCell>
                 <div className='space-y-1'>
@@ -64,4 +64,4 @@ function DashboardSkeleton() {
   )
 }
 
-export default DashboardSkeleton
+export default ServicesTableSkeleton
