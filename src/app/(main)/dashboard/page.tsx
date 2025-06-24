@@ -1,8 +1,11 @@
+import { Suspense } from 'react'
+
 import { URLS } from '@/lib/constants/urls'
 import { fetchData } from '@/lib/utils'
 import { ServicesDataSchema } from '@/lib/validation-schemas/services-validation-schemas'
 
 import ServicesTable from './components/service-table/services-table'
+import ServicesTableSkeleton from './components/service-table/services-table-skeleton'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,7 +27,9 @@ async function DashboardPage() {
             Monitorea los servicios de evaluación de seguridad
           </p>
         </div>
-        <ServicesTable servicesData={servicesData.data ?? null} />
+        <Suspense fallback={<ServicesTableSkeleton />}>
+          <ServicesTable servicesData={servicesData.data ?? null} />
+        </Suspense>
       </div>
     </div>
   )

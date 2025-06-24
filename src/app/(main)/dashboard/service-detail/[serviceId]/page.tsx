@@ -16,18 +16,35 @@ async function ServiceDetailPage({
   searchParams,
 }: {
   params: { serviceId: string }
-  searchParams: { name?: string; severity?: string; vulnerability?: string }
+  searchParams: { name?: string; severity?: string; vulnerability?: string; evidence?: string }
 }) {
   if (!params.serviceId) {
     redirect('/dashboard')
   }
 
+  const initialVulnerabilityId = searchParams.vulnerability
+  const initialEvidenceId = searchParams.evidence
+
   let filters = ''
 
-  const parsedFilters = serviceDetailFiltersSchema.safeParse(searchParams)
+  // *Only include name and severity in the API filters
+  // const apiFilters = {
+  //   name: searchParams.name,
+  //   severity: searchParams.severity,
+  // }
 
-  if (parsedFilters.success) {
-    filters = new URLSearchParams(parsedFilters.data).toString()
+  const parsedApiFilters = serviceDetailFiltersSchema.safeParse(searchParams)
+
+  const urlParams: Record<string, string> = {}
+
+  if (parsedApiFilters.success) {
+    if (parsedApiFilters.data.name !== undefined) urlParams.name = parsedApiFilters.data.name
+    if (parsedApiFilters.data.severity !== undefined)
+      urlParams.severity = parsedApiFilters.data.severity
+  }
+
+  if (Object.keys(urlParams).length > 0) {
+    filters = new URLSearchParams(urlParams).toString()
   }
 
   const servicesData = await fetchData(
@@ -40,9 +57,16 @@ async function ServiceDetailPage({
   )
 
   return servicesData.data ? (
-    <ServiceDetailContainer service={servicesData.data} />
+    <ServiceDetailContainer
+      initialEvidenceId={initialEvidenceId}
+      initialVulnerabilityId={initialVulnerabilityId}
+      service={servicesData.data}
+    />
   ) : (
-    <div>No se encontró el servicio</div>
+    <div className='flex flex-col items-center justify-center h-screen'>
+      <div className='text-red-500 text-center'>No se encontró el servicio</div>
+      <p className='text-red-500 text-center'>{servicesData.message}</p>
+    </div>
   )
 }
 

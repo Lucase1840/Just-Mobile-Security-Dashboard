@@ -1,16 +1,30 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 
 import { ArrowLeft } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { type Service, type Vulnerability } from '@/types/services-data-types'
 
-import ServiceDetail from './service-detail'
-import VulnerabilityDetail from './vulnerabilities-detail'
-import VulnerabilityList from './vulnerability-list'
+import VulnerabilityDetail from './(vulnerabilities)/vulnerabilities-detail/vulnerabilities-detail'
+import { ServiceDetailSkeleton } from './(vulnerabilities)/vulnerabilities-detail/vulnerability-detail-skeleton'
+import { VulnerabilityListSkeleton } from './(vulnerabilities)/vulnerability-list/vulnerability-list-skeleton'
+
+const VulnerabilityList = dynamic(
+  () => import('./(vulnerabilities)/vulnerability-list/vulnerability-list'),
+  {
+    loading: () => <VulnerabilityListSkeleton />,
+    ssr: false,
+  },
+)
+
+const ServiceDetail = dynamic(() => import('./(service-detail)/service-detail'), {
+  loading: () => <ServiceDetailSkeleton />,
+  ssr: false,
+})
 
 interface ServiceDetailViewProps {
   initialEvidenceId?: string
@@ -18,33 +32,96 @@ interface ServiceDetailViewProps {
   service: Service
 }
 
-function ServiceDetailContainer({ service }: ServiceDetailViewProps) {
+function ServiceDetailContainer({
+  service,
+  initialVulnerabilityId,
+  initialEvidenceId,
+}: ServiceDetailViewProps) {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-  const defaultActiveTab = searchParams.get('vulnerability') ? 'vulnerabilities' : 'description'
-  const [activeTab, setActiveTab] = useState<'description' | 'vulnerabilities'>(defaultActiveTab)
+
+  // Set initial active tab based on whether we have vulnerability or evidence
+  const hasInitialVulnerabilityOrEvidence = initialVulnerabilityId || initialEvidenceId
+
+  const [activeTab, setActiveTab] = useState<'description' | 'vulnerabilities'>(
+    hasInitialVulnerabilityOrEvidence ? 'vulnerabilities' : 'description',
+  )
+
   const [selectedVulnerability, setSelectedVulnerability] = useState<Vulnerability | null>(null)
-  const evidenceDefaultValue = searchParams.get('evidence') ?? ''
+  const evidenceDefaultValue = searchParams.get('evidence') ?? initialEvidenceId ?? ''
+
+  // Use ref to track the current vulnerability ID without causing re-renders
+  const vulnerabilityIdRef = useRef<string | null>(initialVulnerabilityId || null)
+
+  const searchVulnerabilityById = useCallback(
+    (vulnerabilityId: string) => {
+      const vulnerability = service.vulnerabilities?.find(
+        (v) => v.vulnerabilityId === vulnerabilityId,
+      )
+
+      return vulnerability ?? null
+    },
+    [service],
+  )
+
+  // Clean URL after initial render if we have vulnerability or evidence params
+  useEffect(() => {
+    const hasVulnerabilityOrEvidence =
+      searchParams.get('vulnerability') || searchParams.get('evidence')
+
+    if (hasVulnerabilityOrEvidence) {
+      const cleanSearchParams = new URLSearchParams()
+
+      // Preserve name and severity parameters
+      const nameParam = searchParams.get('name')
+      const severityParam = searchParams.get('severity')
+
+      if (nameParam) cleanSearchParams.set('name', nameParam)
+      if (severityParam) cleanSearchParams.set('severity', severityParam)
+
+      const cleanUrl = cleanSearchParams.toString()
+        ? `${pathname}?${cleanSearchParams.toString()}`
+        : pathname
+
+      router.replace(cleanUrl, { scroll: false })
+    }
+  }, [searchParams, pathname, router])
 
   const handleVulnerabilitySelect = (vulnerability: Vulnerability) => {
     const vulnerabilityId = vulnerability.vulnerabilityId
-    const params = new URLSearchParams(searchParams.toString())
 
-    params.set('vulnerability', vulnerabilityId)
+    vulnerabilityIdRef.current = vulnerabilityId
 
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    // Update local state without changing URL to avoid re-fetching
+    setSelectedVulnerability(vulnerability)
   }
 
+  // Initialize vulnerability selection from initialVulnerabilityId or URL
   useEffect(() => {
-    const vulnerabilityId = searchParams.get('vulnerability')
+    const urlVulnerabilityId = searchParams.get('vulnerability')
+    const vulnerabilityId = initialVulnerabilityId || urlVulnerabilityId
 
     if (vulnerabilityId) {
-      setSelectedVulnerability(
-        service.vulnerabilities?.find((v) => v.vulnerabilityId === vulnerabilityId) ?? null,
-      )
+      vulnerabilityIdRef.current = vulnerabilityId
+      setActiveTab('vulnerabilities')
+
+      const vulnerability = searchVulnerabilityById(vulnerabilityId)
+
+      setSelectedVulnerability(vulnerability ?? null)
     }
-  }, [searchParams, service.vulnerabilities])
+  }, [initialVulnerabilityId, searchVulnerabilityById])
+
+  // Update selected vulnerability when vulnerabilityIdRef changes
+  useEffect(() => {
+    const currentVulnerabilityId = vulnerabilityIdRef.current
+
+    if (currentVulnerabilityId) {
+      const vulnerability = searchVulnerabilityById(currentVulnerabilityId)
+
+      setSelectedVulnerability(vulnerability)
+    }
+  }, [searchVulnerabilityById])
 
   return (
     <div className='space-y-6 p-4'>
